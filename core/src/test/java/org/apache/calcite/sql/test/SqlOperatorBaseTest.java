@@ -4269,6 +4269,52 @@ public abstract class SqlOperatorBaseTest {
     tester.checkNull("ASCII(cast(null as varchar(1)))");
   }
 
+  @Test public void testToBase64() {
+    final SqlTester tester1 = tester(SqlLibrary.MYSQL);
+    tester1.setFor(SqlLibraryOperators.TO_BASE64);
+    tester1.checkString("to_base64('This is a test String.')",
+            "VGhpcyBpcyBhIHRlc3QgU3RyaW5nLg==",
+            "VARCHAR NOT NULL");
+    tester1.checkString("to_base64('This is a test String. check resulte out of 76T"
+                    + "his is a test String.This is a test String.This is a test String.This is a "
+                    + "test String.This is a test String. This is a test String. check resulte out "
+                    + "of 76This is a test String.This is a test String.This is a test String.This "
+                    + "is a test String.This is a test String. This is a test String. check resulte "
+                    + "out of 76This is a test String.This is a test String.This is a test String."
+                    + "This is a test String.This is a test String.')",
+            "VGhpcyBpcyBhIHRlc3QgU3RyaW5nLiBjaGVjayByZXN1bHRlIG91dCBvZiA3NlRoaXMgaXMgYSB0\n"
+                    + "ZXN0IFN0cmluZy5UaGlzIGlzIGEgdGVzdCBTdHJpbmcuVGhpcyBpcyBhIHRlc3QgU3RyaW5nLlRo\n"
+                    + "aXMgaXMgYSB0ZXN0IFN0cmluZy5UaGlzIGlzIGEgdGVzdCBTdHJpbmcuIFRoaXMgaXMgYSB0ZXN0\n"
+                    + "IFN0cmluZy4gY2hlY2sgcmVzdWx0ZSBvdXQgb2YgNzZUaGlzIGlzIGEgdGVzdCBTdHJpbmcuVGhp\n"
+                    + "cyBpcyBhIHRlc3QgU3RyaW5nLlRoaXMgaXMgYSB0ZXN0IFN0cmluZy5UaGlzIGlzIGEgdGVzdCBT\n"
+                    + "dHJpbmcuVGhpcyBpcyBhIHRlc3QgU3RyaW5nLiBUaGlzIGlzIGEgdGVzdCBTdHJpbmcuIGNoZWNr\n"
+                    + "IHJlc3VsdGUgb3V0IG9mIDc2VGhpcyBpcyBhIHRlc3QgU3RyaW5nLlRoaXMgaXMgYSB0ZXN0IFN0\n"
+                    + "cmluZy5UaGlzIGlzIGEgdGVzdCBTdHJpbmcuVGhpcyBpcyBhIHRlc3QgU3RyaW5nLlRoaXMgaXMg\n"
+                    + "YSB0ZXN0IFN0cmluZy4=",
+            "VARCHAR NOT NULL");
+    tester1.checkNull("to_base64(cast(null as varchar(1)))");
+  }
+
+  @Test public void testFromBase64() {
+    final SqlTester tester1 = tester(SqlLibrary.MYSQL);
+    tester1.setFor(SqlLibraryOperators.FROM_BASE64);
+    tester1.checkString("from_base64('VGhpcyBpcyBhIHRlc3QgU3RyaW5nLg==')",
+            "This is a test String.",
+            "VARCHAR NOT NULL");
+    tester1.checkString("from_base64('VGhpcyBpcyBhIHRlc\t3QgU3RyaW5nLg==')",
+            "This is a test String.",
+            "VARCHAR NOT NULL");
+    tester1.checkString("from_base64('VGhpcyBpcyBhIHRlc\t3QgU3\nRyaW5nLg==')",
+            "This is a test String.",
+            "VARCHAR NOT NULL");
+    tester1.checkString("from_base64('VGhpcyB  pcyBhIHRlc3Qg\tU3Ry\naW5nLg==')",
+            "This is a test String.",
+            "VARCHAR NOT NULL");
+    tester1.checkNull("from_base64('-1')");
+    tester1.checkNull("from_base64('-100')");
+    tester1.checkNull("from_base64(cast(null as varchar(1)))");
+  }
+
   @Test public void testRepeatFunc() {
     final SqlTester tester1 = tester(SqlLibrary.MYSQL);
     tester1.setFor(SqlLibraryOperators.REPEAT);

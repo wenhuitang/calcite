@@ -53,6 +53,7 @@ import java.sql.Timestamp;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Base64;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
@@ -68,6 +69,8 @@ import java.util.concurrent.atomic.AtomicLong;
 import java.util.regex.Pattern;
 
 import static org.apache.calcite.util.Static.RESOURCE;
+
+import static java.nio.charset.StandardCharsets.UTF_8;
 
 /**
  * Helper methods to implement SQL functions in generated code.
@@ -119,6 +122,41 @@ public class SqlFunctions {
       ThreadLocal.withInitial(HashMap::new);
 
   private SqlFunctions() {
+  }
+
+  /** SQL TO_BASE64(string) function*/
+  public static String toBase64(String string) {
+    if (string == null) {
+      return null;
+    }
+    String base64 = Base64.getEncoder().encodeToString(string.getBytes(UTF_8));
+    String temp = base64;
+    StringBuilder str = new StringBuilder(base64.length() + base64.length() / 76);
+    while ((temp.length() / 76) > 0) {
+      str.append(temp.substring(0, 76));
+      str.append("\n");
+      temp = temp.substring(76, temp.length());
+    }
+    base64 = str.append(temp).toString();
+    return base64;
+  }
+
+  /** SQL FROM_BASE64(string) function*/
+  public static String fromBase64(String base64) {
+    if (base64 == null) {
+      return null;
+    }
+    try {
+      base64 = base64.replaceAll("[\\t\\n\\r\\s]", "");
+      byte[] afterDecode = Base64.getDecoder().decode(base64.getBytes(UTF_8));
+      StringBuilder builder = new StringBuilder(afterDecode.length);
+      for (byte b: afterDecode) {
+        builder.append((char) b);
+      }
+      return builder.toString();
+    } catch (IllegalArgumentException e) {
+      return null;
+    }
   }
 
   /** SQL SUBSTRING(string FROM ... FOR ...) function. */
