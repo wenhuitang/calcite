@@ -79,6 +79,18 @@ class CassandraAdapterDataTypesTest {
                 + ", f_varint INTEGER]");
   }
 
+  @Test void testSimpleQuery() {
+    CalciteAssert.that()
+        .with(DTCASSANDRA)
+        .query("select * from \"test_type\" where \"f_id\" = 1")
+        .returns("");
+
+    CalciteAssert.that()
+        .with(DTCASSANDRA)
+        .query("select * from \"test_type\" where \"f_id\" > 1")
+        .returns("f_id=3000000000; f_user=ANNA\n");
+  }
+
   @Test void testSimpleTypesValues() {
     CalciteAssert.that()
         .with(DTCASSANDRA)

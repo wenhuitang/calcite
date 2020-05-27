@@ -174,14 +174,13 @@ public class CassandraFilter extends Filter implements CassandraRel {
       }
     }
 
-    /** Convert the value of a literal to a string.
+    /** Returns the value of the literal.
      *
      * @param literal Literal to translate
-     * @return String representation of the literal
+     * @return The value of the literal in the form of the actual type.
      */
-    private static String literalValue(RexLiteral literal) {
-      Object value = literal.getValue2();
-      return String.valueOf(value);
+    private static Object literalValue(RexLiteral literal) {
+      return literal.getValue2();
     }
 
     /** Translate a conjunctive predicate to a CQL string.

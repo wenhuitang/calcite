@@ -116,3 +116,7 @@ INSERT INTO test_frozen_collections (f_int, f_list, f_map, f_set, f_tuple) VALUE
                                                                                    {'k1':'v1', 'k2':'v2'},
                                                                                    {2.0, 3.1},
                                                                                    (3000000000, 0x30FF87, '2015-05-03 13:30:54.234'));
+
+CREATE TABLE test_type ( f_user varchar, f_id bigint PRIMARY KEY );
+
+INSERT INTO test_type (f_user, f_id) VALUES ('ANNA', 3000000000);
